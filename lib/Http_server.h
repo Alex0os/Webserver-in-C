@@ -2,8 +2,6 @@
 #define HTTP_SERVER_H
 #include <stddef.h>
 
-#define BUFFER_SIZE 10000
-
 
 typedef struct {
 	int socket;

@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
+#define BUFFER_SIZE 10000
 #define PORT 8080
 
 typedef struct {
@@ -13,8 +14,7 @@ typedef struct {
 	int port;
 } Http_server;;
 
-char* file_content(FILE* file, int file_size);
-int file_size(FILE* file);
+void print_request(int client_socket);
 
 int create_socket(Http_server* new_server){
 
@@ -41,6 +41,7 @@ int create_socket(Http_server* new_server){
 	return 0;
 }
 
+
 void handle_client(int socket_fd, char* buffer, size_t buffer_size){
 
 	struct sockaddr_in client_addr;
@@ -53,40 +54,22 @@ void handle_client(int socket_fd, char* buffer, size_t buffer_size){
 		 exit(EXIT_FAILURE);
 	}
 	
-	recv(request_fd, buffer, buffer_size, 0);
+	print_request(request_fd);
 
-	FILE* html_file = fopen("src/index.html", "r");
-	int html_size = file_size(html_file);
-	char* html_content = file_content(html_file, html_size);
 
-	char* response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n\r\n\r\n<h1>Hello world</h1>";
-	char full_response[html_size + strlen(response)];
+	send(request_fd, (const void*)buffer, buffer_size, 0);
 
-	strcpy(full_response, response);
-	strcat(full_response, html_content);
 
-	send(request_fd, full_response, strlen(full_response), 0);
-
-	
-
-	free(html_file);
-	free(html_content);
 	close(request_fd);
 }
 
-int file_size(FILE* file){
-	fseek(file, 0, SEEK_END);
-	int size = ftell(file);
-	rewind(file);
+void print_request(int client_socket){
+	char buffer[BUFFER_SIZE];
+	int bytes_recieved = recv(client_socket, buffer, BUFFER_SIZE, 0);
 
-	return size;
-}
+	buffer[bytes_recieved] = '\0';
 
-char* file_content(FILE* file, int file_size){
-	char* file_content = malloc(file_size + 1);
-	fread(file_content, 1, file_size, file);
-
-	return file_content;
+	printf("%s\n", buffer);
 }
 
 
