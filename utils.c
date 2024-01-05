@@ -5,35 +5,24 @@
 
 #define BUFFER_SIZE 10000
 
-void parsing_request(char* buffer){
-	char first_line[20];
-	size_t i = 0;
 
-	while (buffer[i] != '\n') {
-		first_line[i] = buffer[i];
-		i++;
+
+int main(void)
+{
+
+	Http_server http_server;
+
+	if (create_socket(&http_server) < 0){
+		exit(EXIT_FAILURE);
 	}
 
-}
+	char buffer[BUFFER_SIZE];
 
-int main(){
-	Http_server server;
-	int socket_status = create_socket(&server);
+	for (;;) {
+		handle_client(http_server.socket, buffer, BUFFER_SIZE);
 
-	if (socket_status < 0){
-		return 1;
+		printf("%s\n", buffer);
 	}
 
-for (;;) {
-		char* buffer = malloc(BUFFER_SIZE);
-
-		handle_client(&server.socket, buffer, BUFFER_SIZE);
-		printf("%s", buffer);
-
-		parsing_request(buffer);
-
-		free(buffer);
-	}
-
-	return 0;
+	return EXIT_SUCCESS;
 }
