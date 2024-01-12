@@ -7,11 +7,11 @@ components to be used for building (at least) simple applications.
 
 ## Checklist
 
-- [ ] Create the routing for valid URIs defines by the developer
-   - [ ] Create a hash table that stores valid URIs and their corresponding resources
-      - [ ] Create a function that allows to create a valid linking between an URI and a resource
-      - [ ] Create a procedure where it is stated if the URI has an extention or not
-      - [ ] If it has an extention, then use it to search the folder where the resource is located
-      - [ ] If it doesn't, then search for the resource related to the URI
-   - [ ] Create the necessary piece of middleware to inform the client that the URI is invalid
+- [x] Create the routing for valid URIs defines by the developer
+   - [x] Create a hash table that stores valid URIs and their corresponding resources
+   - [x] Create a function that allows to create a valid linking between an URI and a resource
+
+- [ ] Create an HTML parser that scan all the resources for the HTML resources linked to valid routes
+    - [ ] Use the route of the resource in the HTML file as a key and the value of that key should be the content of the file
+
 - [ ] Creating a simple middleware for the server

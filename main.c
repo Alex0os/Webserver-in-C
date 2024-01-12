@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "lib/Http_server.h"
-#include "lib/routing.h"
+//#include "lib/routing.h"
 
 #define BUFFER_SIZE 10000
 
@@ -52,15 +52,15 @@ ResponseBuffer response_buffer(){
 }
 
 
-void defining_routes(){
-	Hash_Table* linked_routes = create_table();
-	create_route(linked_routes, "/", "src/index.html");
-}
-
-void defining_files(){
-	Hash_Table* linked_files = create_table();
-	create_route(linked_files, "style.css", prot_get_file_content("style.css"));
-}
+//void defining_routes(){
+//	Hash_Table* linked_routes = create_table();
+//	create_route(linked_routes, "/", "src/index.html");
+//}
+//
+//void defining_files(){
+//	Hash_Table* linked_files = create_table();
+//	//create_route(linked_files, "style.css", prot_get_file_content("style.css"));
+//}
 
 
 int main(void)
