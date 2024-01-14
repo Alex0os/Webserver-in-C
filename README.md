@@ -11,6 +11,13 @@ components to be used for building (at least) simple applications.
    - [x] Create a hash table that stores valid URIs and their corresponding resources
    - [x] Create a function that allows to create a valid linking between an URI and a resource
 
-- [ ] Create a process that get al the file content for every file inside the "src/" folder that is not an HTML file
+- [x] Create a process that get al the file content for every file inside the "src/" folder that is not an HTML file
+    - [x] Create a process that get the content of all the folders inside "src/" folder
+    - [x] List al the files inside the previously mentioned folders
+    - [x] Create a process that can take all the content of these files
+    - [x] Create a hash table where each item has the relative route of the file inside the "src/" folder as the key
+    - [x] Make the value of that key the content of the file
+
+- [ ] Create a process that takes the URI that the request is asking for to give a propper response
 
 - [ ] Creating a simple middleware for the server

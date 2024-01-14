@@ -33,11 +33,11 @@ char* resource_folder(char* resource){
 }
 
 int hash_function(char* route){
-	int hash_index = 0;
+	size_t hash_index = 0;
 	for (size_t i = 0; route[i]; i++) {
-		hash_index += route[i] * (pow(12, i));
+		hash_index += route[i] * (pow(2, i));
 	}
-	return hash_index % TABLE_SIZE;
+	return hash_index % (size_t)TABLE_SIZE;
 }
 
 Hash_Table* create_table(){
@@ -65,7 +65,7 @@ void handle_collision(Item* item, char* route, char* resource){
 }
 
 void create_route(Hash_Table* table, char* route, char* resource){
-	int i = hash_function(route);
+	size_t i = hash_function(route);
 
 	if (table->items[i] != NULL) {
 		handle_collision(table->items[i], route, resource);
@@ -81,7 +81,7 @@ void create_route(Hash_Table* table, char* route, char* resource){
 
 void printchain(Item* item){
 	do {
-		printf("Key: %s --> Value: %s\n", item->route, item->resource);
+		printf("Key: %s\nValue: %s\n\n", item->route, item->resource);
 		item = item->next_link;
 	} while (item != NULL);
 }
@@ -94,7 +94,7 @@ void print_table(Hash_Table* table){
 		if (table->items[i]->next_link != NULL) {
 			printchain(table->items[i]);
 		} else {
-			printf("Key: %s --> Value: %s\n", table->items[i]->route, table->items[i]->resource);
+			printf("Key: %s\nValue: %s\n\n", table->items[i]->route, table->items[i]->resource);
 		}
 	}
 }
