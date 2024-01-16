@@ -8,7 +8,7 @@ struct Header_Info {
 };
 
 char* file_content(FILE* file, int file_size);
-int file_size(FILE* file);
+int get_file_size(FILE* file);
 struct Header_Info* definir_tipo_y_subtipo(char* extention);
 
 #endif // NEW_H

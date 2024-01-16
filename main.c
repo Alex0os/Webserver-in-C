@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -17,8 +18,7 @@ typedef struct _ResponseBuffer {
 
 void defining_routes(){
 	Hash_Table* linked_routes = create_table();
-	create_route(linked_routes, "/", "src/index.html");
-	print_table(linked_routes);
+	create_route(linked_routes, "/", "index.html");
 }
 
 void defining_files(){
@@ -35,13 +35,19 @@ void defining_files(){
 
 
 ResponseBuffer* response_buffer(char* resource){
+	char current_dir[512];
+	getcwd(current_dir, 256);
+	char resource_route[512];
+	sprintf(resource_route, "%s/src%s",current_dir, resource);
 
-	FILE* file_ptr = fopen(resource, "r");
+
+
+	FILE* file_ptr = fopen(resource_route, "r");
 	if (file_ptr == NULL) {
 		return NULL;
 	}
 
-	int html_size = file_size(file_ptr);
+	int html_size = get_file_size(file_ptr);
 	char* html_content = file_content(file_ptr, html_size);
 
 	struct Header_Info* header = definir_tipo_y_subtipo(strchr(resource, '.'));
@@ -77,8 +83,8 @@ void imprime(char* resource){
 
 int main(void)
 {
-	imprime("src/index.html");
-	imprime("src/styles/style.css");
+	imprime("/index.html");
+	imprime("/styles/style.css");
 	return 0;
 }
 //	defining_files();

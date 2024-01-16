@@ -10,7 +10,7 @@ struct Header_Info {
 
 struct Header_Info* definir_tipo_y_subtipo(char* extention);
 char* file_content(FILE* file, int file_size);
-int file_size(FILE* file);
+int get_file_size(FILE* file);
 
 struct Header_Info* definir_tipo_y_subtipo(char* extention){
 	struct Header_Info* header = (struct Header_Info*)malloc(sizeof(struct Header_Info));
@@ -44,7 +44,7 @@ struct Header_Info* definir_tipo_y_subtipo(char* extention){
 	return NULL;
 }
 
-int file_size(FILE* file){
+int get_file_size(FILE* file){
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
 	rewind(file);
