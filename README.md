@@ -20,7 +20,7 @@ components to be used for building (at least) simple applications.
 
 - [ ] Create a process that takes the URI that the request is asking for to give a propper response
     - [x] Create a function that takes the resource route in the system and then returns an HTTP header based on its file extention
-    - [ ] Debug the problem that makes the terminal hang on in execution mode when the compiled output is executed
+    - [x] Debug the problem that makes the terminal hang on in execution mode when the compiled output is executed
 
 
 - [ ] Creating a simple middleware for the server

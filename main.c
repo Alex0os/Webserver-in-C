@@ -15,35 +15,6 @@ typedef struct _ResponseBuffer {
 } ResponseBuffer;
 
 
-ResponseBuffer* response_buffer(char* resource){
-
-	FILE* html_file = fopen(resource, "r");
-	if (html_file == NULL) {
-		return NULL;
-	}
-
-	int html_size = file_size(html_file);
-	char* html_content = file_content(html_file, html_size);
-
-	struct Header_Info* header = definir_tipo_y_subtipo(strchr(resource, '.'));
-	char* full_response = (char*)malloc(html_size + header->header_size + 1);
-
-
-	strcpy(full_response, header->header_content);
-	strcat(full_response, html_content);
-
-	free(html_file);
-	free(html_content);
-
-	ResponseBuffer* buffer = (ResponseBuffer*)malloc(sizeof(ResponseBuffer));
-
-	buffer->buffer_content = full_response;
-	buffer->buffer_size = strlen(full_response);
-
-	return buffer;
-}
-
-
 void defining_routes(){
 	Hash_Table* linked_routes = create_table();
 	create_route(linked_routes, "/", "src/index.html");
@@ -63,20 +34,51 @@ void defining_files(){
 }
 
 
+ResponseBuffer* response_buffer(char* resource){
+
+	FILE* file_ptr = fopen(resource, "r");
+	if (file_ptr == NULL) {
+		return NULL;
+	}
+
+	int html_size = file_size(file_ptr);
+	char* html_content = file_content(file_ptr, html_size);
+
+	struct Header_Info* header = definir_tipo_y_subtipo(strchr(resource, '.'));
+	char* full_response = (char*)malloc(html_size + header->header_size + 1);
+
+
+	strcpy(full_response, header->header_content);
+	strcat(full_response, html_content);
+
+	fclose(file_ptr);
+	free(html_content);
+	free(header);
+
+	ResponseBuffer* buffer = (ResponseBuffer*)malloc(sizeof(ResponseBuffer));
+
+	buffer->buffer_content = full_response;
+	buffer->buffer_size = strlen(full_response);
+
+
+	return buffer;
+}
+
 void imprime(char* resource){
 	ResponseBuffer* response = response_buffer(resource);
 	if (response == NULL) {
 		printf("Se ha generado un error, no existe %s en la aplicacioń\n", resource);
 		return;
 	}
-	printf("Contenido de %s ---> %s", resource, response->buffer_content);
+	printf("Contenido de %s ---> %s\n", resource, response->buffer_content);
+	free(response);
+	return;
 }
 
 int main(void)
 {
 	imprime("src/index.html");
 	imprime("src/styles/style.css");
-	imprime("favicon.co");
 	return 0;
 }
 //	defining_files();

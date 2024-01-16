@@ -8,7 +8,6 @@ struct Header_Info {
 	size_t header_size;
 };
 
-// Seria mas simple solamente tomar la función que abre los archivos y desde hay definir obtener la extensión
 struct Header_Info* definir_tipo_y_subtipo(char* extention);
 char* file_content(FILE* file, int file_size);
 int file_size(FILE* file);
