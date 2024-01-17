@@ -14,7 +14,6 @@ typedef struct {
 	int port;
 } Http_server;;
 
-void print_request(int client_socket);
 
 int create_socket(Http_server* new_server){
 
@@ -42,34 +41,36 @@ int create_socket(Http_server* new_server){
 }
 
 
-void handle_client(int socket_fd, char* buffer, size_t buffer_size){
+int handle_client(int socket_fd){
 
 	struct sockaddr_in client_addr;
 	size_t client_addr_size = sizeof(client_addr);
 
-	ssize_t request_fd = accept(socket_fd, (struct sockaddr*)&client_addr, (socklen_t*)&client_addr_size);
+	int request_fd = accept(socket_fd, (struct sockaddr*)&client_addr, (socklen_t*)&client_addr_size);
 
 	if (request_fd < 0) {
 		 perror("A problem happened while trying to connect to the client");
 		 exit(EXIT_FAILURE);
 	}
-	
-	print_request(request_fd);
-
-
-	send(request_fd, (const void*)buffer, buffer_size, 0);
-
-
-	close(request_fd);
+	return request_fd;
 }
 
-void print_request(int client_socket){
+void send_response(int client_fd, char* buffer_content, int buffer_size){
+	send(client_fd, (const void*)buffer_content, buffer_size, 0);
+	close(client_fd);
+}
+
+char* get_request_header(int client_socket){
 	char buffer[BUFFER_SIZE];
 	int bytes_recieved = recv(client_socket, buffer, BUFFER_SIZE, 0);
 
 	buffer[bytes_recieved] = '\0';
+	char* method = malloc(100);
+	char* uri = malloc(100);;
+	char* version = malloc(100);;
 
-	printf("%s\n", buffer);
+	sscanf(buffer, "%s %s %s", method, uri, version);
+	return uri;
 }
 
 
