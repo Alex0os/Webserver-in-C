@@ -6,15 +6,15 @@
 #include "lib/Http_server.h"
 #include "lib/routing.h"
 #include "lib/new.h"
-//#include "lib/utils.h"
-
-#define BUFFER_SIZE 10000
 
 typedef struct _ResponseBuffer {
 	char* buffer_content;
 	int buffer_size;
 } ResponseBuffer;
 
+
+Hash_Table* defining_routes();
+ResponseBuffer* get_resource_info(Hash_Table* table, char* route);
 ResponseBuffer* response_buffer(char* resource);
 
 Hash_Table* defining_routes(){
@@ -25,18 +25,6 @@ Hash_Table* defining_routes(){
 }
 
 
-//void defining_files(){
-//	Hash_Table* linked_files = create_table();
-//
-//	struct Files_List* files_list = open_source_dir();
-//	for (int i = 0; i < files_list->counter; i++) {
-//		char* file_content = get_file_content(get_file_info(files_list->list[i]));
-//
-//		create_route(linked_files, files_list->list[i], file_content);
-//	}
-//	print_table(linked_files);
-//}
-//
 ResponseBuffer* get_resource_info(Hash_Table* table, char* route){
 	int i = hash_function(route);
 	Item* resource_content = table->items[i];
@@ -71,7 +59,7 @@ ResponseBuffer* response_buffer(char* resource){
 	int html_size = get_file_size(file_ptr);
 	char* html_content = file_content(file_ptr, html_size);
 
-	struct Header_Info* header = definir_tipo_y_subtipo(strchr(resource, '.'));
+	struct Header_Info* header = get_content_type(strchr(resource, '.'));
 	char* full_response = (char*)malloc(html_size + header->header_size + 1);
 
 
@@ -91,16 +79,6 @@ ResponseBuffer* response_buffer(char* resource){
 	return buffer;
 }
 
-void imprime(char* resource){
-	ResponseBuffer* response = response_buffer(resource);
-	if (response == NULL) {
-		printf("Se ha generado un error, no existe %s en la aplicacioń\n", resource);
-		return;
-	}
-	printf("Contenido de %s ---> %s\n", resource, response->buffer_content);
-	free(response);
-	return;
-}
 
 int main(void)
 {

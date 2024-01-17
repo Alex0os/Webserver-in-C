@@ -8,11 +8,11 @@ struct Header_Info {
 	size_t header_size;
 };
 
-struct Header_Info* definir_tipo_y_subtipo(char* extention);
+struct Header_Info* get_content_type(char* extention);
 char* file_content(FILE* file, int file_size);
 int get_file_size(FILE* file);
 
-struct Header_Info* definir_tipo_y_subtipo(char* extention){
+struct Header_Info* get_content_type(char* extention){
 	struct Header_Info* header = (struct Header_Info*)malloc(sizeof(struct Header_Info));
 
 	if (strcmp(extention, ".html") == 0){
