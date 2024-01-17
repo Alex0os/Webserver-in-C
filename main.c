@@ -6,7 +6,7 @@
 #include "lib/Http_server.h"
 #include "lib/routing.h"
 #include "lib/new.h"
-#include "lib/utils.h"
+//#include "lib/utils.h"
 
 #define BUFFER_SIZE 10000
 
@@ -25,18 +25,18 @@ Hash_Table* defining_routes(){
 }
 
 
-void defining_files(){
-	Hash_Table* linked_files = create_table();
-
-	struct Files_List* files_list = open_source_dir();
-	for (int i = 0; i < files_list->counter; i++) {
-		char* file_content = get_file_content(get_file_info(files_list->list[i]));
-
-		create_route(linked_files, files_list->list[i], file_content);
-	}
-	print_table(linked_files);
-}
-
+//void defining_files(){
+//	Hash_Table* linked_files = create_table();
+//
+//	struct Files_List* files_list = open_source_dir();
+//	for (int i = 0; i < files_list->counter; i++) {
+//		char* file_content = get_file_content(get_file_info(files_list->list[i]));
+//
+//		create_route(linked_files, files_list->list[i], file_content);
+//	}
+//	print_table(linked_files);
+//}
+//
 ResponseBuffer* get_resource_info(Hash_Table* table, char* route){
 	int i = hash_function(route);
 	Item* resource_content = table->items[i];
@@ -106,7 +106,6 @@ int main(void)
 {
 
 	Hash_Table* routes_resources_table = defining_routes();
-	ResponseBuffer* response = get_resource_info(routes_resources_table, "/style");
 	Http_server http_server;
 
 	if (create_socket(&http_server) < 0){
@@ -119,13 +118,19 @@ int main(void)
 
 
 		char* uri = get_request_header(client_socket);
-		ResponseBuffer* response = get_resource_info(routes_resources_table, uri);
+		ResponseBuffer* response;
 
+		if (is_valid_route(uri)) {
+			response = get_resource_info(routes_resources_table, uri);
+		} else {
+			response = response_buffer(uri);
+		}
 
 		if (response == NULL) {
 			printf("The uri '%s' didn't return any resource content, not resource found", uri);
 			continue;
 		}
+
 		send_response(client_socket, response->buffer_content, response->buffer_size);
 		
 	}

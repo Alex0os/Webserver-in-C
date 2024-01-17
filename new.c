@@ -59,4 +59,10 @@ char* file_content(FILE* file, int file_size){
 	return file_content;
 }
 
+int is_valid_route(char* uri){
+	if (strchr(uri, '.')) {
+		return 0;
+	}
+	return 1;
+}
 
