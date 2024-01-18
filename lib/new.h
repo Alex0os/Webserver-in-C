@@ -10,6 +10,6 @@ struct Header_Info {
 char* file_content(FILE* file, int file_size);
 int get_file_size(FILE* file);
 int is_valid_route(char* uri);
-struct Header_Info* get_content_type(char* extention);
+struct Header_Info* get_content_type(char* extention, char* uri);
 
 #endif // NEW_H

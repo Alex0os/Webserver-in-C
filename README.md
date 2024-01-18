@@ -23,6 +23,11 @@ components to be used for building (at least) simple applications.
     - [x] Debug the problem that makes the terminal hang on in execution mode when the compiled output is executed
     - [x] See if after the modification of the "response_buffer" buffer function, some functions in "utils.c" are still needed
 
+- [ ] Modify the process to obtain the content of the resource that is being asked by the HTTP request
+    - [ ] Simplify the process to wrap the "Content-Type" sub-type value in the response header
+    - [ ] Modify the process that gives the value of the "Content-Type" to define its main type before creating the header
+    - [ ] Refactoring the process of getting the resource content to cover a wider range of exceptions and making it more readable
+
 
 
 - [ ] Creating a simple middleware for the server

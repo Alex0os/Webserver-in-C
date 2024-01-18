@@ -59,7 +59,7 @@ ResponseBuffer* response_buffer(char* resource){
 	int html_size = get_file_size(file_ptr);
 	char* html_content = file_content(file_ptr, html_size);
 
-	struct Header_Info* header = get_content_type(strchr(resource, '.'));
+	struct Header_Info* header = get_content_type(strchr(resource, '.'), resource);
 	char* full_response = (char*)malloc(html_size + header->header_size + 1);
 
 

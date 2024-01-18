@@ -12,36 +12,15 @@ struct Header_Info* get_content_type(char* extention);
 char* file_content(FILE* file, int file_size);
 int get_file_size(FILE* file);
 
+
 struct Header_Info* get_content_type(char* extention){
 	struct Header_Info* header = (struct Header_Info*)malloc(sizeof(struct Header_Info));
 
-	if (strcmp(extention, ".html") == 0){
-		header->header_content = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-		header->header_size = strlen(header->header_content);
-		return header;
-	}
-	else if (strcmp(extention, ".css") == 0){
-		header->header_content = "HTTP/1.1 200 OK\r\nContent-Type: text/css\r\n\r\n";
-		header->header_size = strlen(header->header_content);
-		return header;
-	}
-	else if (strcmp(extention, ".js") == 0){
-		header->header_content = "HTTP/1.1 200 OK\r\nContent-Type: text/js\r\n\r\n";
-		header->header_size = strlen(header->header_content);
-		return header;
-	}
-	else if (strcmp(extention, ".png") == 0){
-		header->header_content = "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\n\r\n";
-		header->header_size = strlen(header->header_content);
-		return header;
-	}
-	else if (strcmp(extention, ".jpeg") == 0){
-		header->header_content = "HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\n\r\n";
-		header->header_size = strlen(header->header_content);
-		return header;
-	}
-	free(header);
-	return NULL;
+	header->header_content = (char*)malloc(1000);
+	sprintf(header->header_content, "HTTP/1.1 200 OK\r\nContent-Type: text/%s\r\n\r\n", extention + 1);
+	header->header_size = strlen(header->header_content);
+
+	return header;
 }
 
 int get_file_size(FILE* file){
@@ -65,4 +44,5 @@ int is_valid_route(char* uri){
 	}
 	return 1;
 }
+
 
