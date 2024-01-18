@@ -43,23 +43,18 @@ ResponseBuffer* get_resource_info(Hash_Table* table, char* route){
 }
 
 ResponseBuffer* response_buffer(char* resource){
-	char current_dir[512];
-	getcwd(current_dir, 256);
-	char resource_route[512];
-	sprintf(resource_route, "%s/src%s",current_dir, resource);
-
-
+	char* resource_route = get_resource_route(resource);
 
 	FILE* file_ptr = fopen(resource_route, "r");
 	if (file_ptr == NULL) {
-		perror("No se ha podido abrir el archivo");
+		perror("The resource was not found");
 		return NULL;
 	}
 
 	int html_size = get_file_size(file_ptr);
 	char* html_content = file_content(file_ptr, html_size);
 
-	struct Header_Info* header = get_content_type(strchr(resource, '.'), resource);
+	struct Header_Info* header = get_content_subtype(strchr(resource, '.'), resource);
 	char* full_response = (char*)malloc(html_size + header->header_size + 1);
 
 
@@ -67,6 +62,7 @@ ResponseBuffer* response_buffer(char* resource){
 	strcat(full_response, html_content);
 
 	fclose(file_ptr);
+	free(resource_route);
 	free(html_content);
 	free(header);
 
@@ -74,15 +70,11 @@ ResponseBuffer* response_buffer(char* resource){
 
 	buffer->buffer_content = full_response;
 	buffer->buffer_size = strlen(full_response);
-
-
 	return buffer;
 }
 
 
-int main(void)
-{
-
+int main(void){
 	Hash_Table* routes_resources_table = defining_routes();
 	Http_server http_server;
 
@@ -90,18 +82,17 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-
 	for (;;) {
 		int client_socket = handle_client(http_server.socket);
-
 
 		char* uri = get_request_header(client_socket);
 		ResponseBuffer* response;
 
-		if (is_valid_route(uri)) {
-			response = get_resource_info(routes_resources_table, uri);
-		} else {
+		if (strchr(uri, '.')) {
+			// If a dot is in the "uri", then it is a file route, so is not necessary to look for it in the table of defined valid routes
 			response = response_buffer(uri);
+		} else {
+			response = get_resource_info(routes_resources_table, uri);
 		}
 
 		if (response == NULL) {
@@ -110,8 +101,7 @@ int main(void)
 		}
 
 		send_response(client_socket, response->buffer_content, response->buffer_size);
-		
+		free(response);
 	}
-
 	return EXIT_SUCCESS;
 }
