@@ -19,19 +19,19 @@ typedef struct _hash_table {
 } Hash_Table;
 
 
-char* resource_folder(char* resource){
-	int char_index = 0;
-
-	for (int i = 0; resource[char_index]; i++) {
-		if (resource[char_index] == '.') {
-			char* resource_extention = malloc(MAX_EXTENTION_SIZE);
-			strcpy(resource_extention, &resource[char_index]);
-			return resource_extention;
-		}
-	}
-	return NULL;
-}
-
+//char* resource_folder(char* resource){
+//	int char_index = 0;
+//
+//	for (int i = 0; resource[char_index]; i++) {
+//		if (resource[char_index] == '.') {
+//			char* resource_extention = malloc(MAX_EXTENTION_SIZE);
+//			strcpy(resource_extention, &resource[char_index]);
+//			return resource_extention;
+//		}
+//	}
+//	return NULL;
+//}
+//
 int hash_function(char* route){
 	size_t hash_index = 0;
 	for (size_t i = 0; route[i]; i++) {
@@ -53,7 +53,7 @@ Hash_Table* create_table(){
 	return table;
 }
 
-void handle_collision(Item* item, char* route, char* resource){
+static void handle_collision(Item* item, char* route, char* resource){
 	while (item->next_link != NULL) {
 		item = item->next_link;
 	}
@@ -78,6 +78,9 @@ void create_route(Hash_Table* table, char* route, char* resource){
 	table->items[i]->resource  = resource;
 	table->items[i]->next_link = NULL;
 }
+
+
+// These are auxiliar functions to print the results of creating a hash table with this codebase
 
 void printchain(Item* item){
 	do {

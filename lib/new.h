@@ -7,10 +7,10 @@ struct Header_Info {
 	size_t header_size;
 };
 
-char* file_content(FILE* file, int file_size);
-char* get_resource_route(char* resource);
+char* get_file_content(FILE* file, int file_size);
+FILE* get_resource_ptr(char* resource);
 int get_file_size(FILE* file);
 int is_valid_route(char* uri);
-struct Header_Info* get_content_subtype(char* extention, char* uri);
+	struct Header_Info* get_response_header(char* extention, char* uri);
 
 #endif // NEW_H

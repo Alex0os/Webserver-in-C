@@ -70,6 +70,8 @@ char* get_request_header(int client_socket){
 	char* version = malloc(100);;
 
 	sscanf(buffer, "%s %s %s", method, uri, version);
+	free(method);
+	free(version);
 	return uri;
 }
 

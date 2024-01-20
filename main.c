@@ -12,10 +12,10 @@ typedef struct _ResponseBuffer {
 	int buffer_size;
 } ResponseBuffer;
 
-
 Hash_Table* defining_routes();
-ResponseBuffer* get_resource_info(Hash_Table* table, char* route);
+char* get_resource_info(Hash_Table* table, char* route);
 ResponseBuffer* response_buffer(char* resource);
+
 
 Hash_Table* defining_routes(){
 	Hash_Table* linked_routes = create_table();
@@ -25,7 +25,7 @@ Hash_Table* defining_routes(){
 }
 
 
-ResponseBuffer* get_resource_info(Hash_Table* table, char* route){
+char* get_resource_info(Hash_Table* table, char* route){
 	int i = hash_function(route);
 	Item* resource_content = table->items[i];
 
@@ -38,32 +38,29 @@ ResponseBuffer* get_resource_info(Hash_Table* table, char* route){
 			return NULL;
 		}
 	}
-
-	return response_buffer(resource_content->resource);
+	return resource_content->resource;
 }
 
-ResponseBuffer* response_buffer(char* resource){
-	char* resource_route = get_resource_route(resource);
 
-	FILE* file_ptr = fopen(resource_route, "r");
-	if (file_ptr == NULL) {
+ResponseBuffer* response_buffer(char* resource){
+	FILE* resource_ptr = get_resource_ptr(resource);
+
+	if (resource_ptr == NULL) {
 		perror("The resource was not found");
 		return NULL;
 	}
 
-	int html_size = get_file_size(file_ptr);
-	char* html_content = file_content(file_ptr, html_size);
+	int file_size = get_file_size(resource_ptr);
+	char* file_content = get_file_content(resource_ptr, file_size);
 
-	struct Header_Info* header = get_content_subtype(strchr(resource, '.'), resource);
-	char* full_response = (char*)malloc(html_size + header->header_size + 1);
+	struct Header_Info* header = get_response_header(strchr(resource, '.'), resource);
+	char* full_response = (char*)malloc(file_size + header->header_size + 1);
 
 
-	strcpy(full_response, header->header_content);
-	strcat(full_response, html_content);
+	sprintf(full_response, "%s%s", header->header_content, file_content);
 
-	fclose(file_ptr);
-	free(resource_route);
-	free(html_content);
+	fclose(resource_ptr);
+	free(file_content);
 	free(header);
 
 	ResponseBuffer* buffer = (ResponseBuffer*)malloc(sizeof(ResponseBuffer));
@@ -92,16 +89,17 @@ int main(void){
 			// If a dot is in the "uri", then it is a file route, so is not necessary to look for it in the table of defined valid routes
 			response = response_buffer(uri);
 		} else {
-			response = get_resource_info(routes_resources_table, uri);
+			char* resource_linked_to_route = get_resource_info(routes_resources_table, uri);
+			response = response_buffer(resource_linked_to_route);
 		}
 
 		if (response == NULL) {
-			printf("The uri '%s' didn't return any resource content, not resource found", uri);
 			continue;
 		}
 
 		send_response(client_socket, response->buffer_content, response->buffer_size);
 		free(response);
+		free(uri);
 	}
 	return EXIT_SUCCESS;
 }
