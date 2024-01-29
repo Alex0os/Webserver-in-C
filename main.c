@@ -4,8 +4,8 @@
 #include <stdlib.h>
 
 #include "lib/Http_server.h"
-#include "lib/routing.h"
-#include "lib/new.h"
+#include "lib/urls.h"
+#include "lib/http_content_resolver.h"
 
 typedef struct _ResponseBuffer {
 	char* buffer_content;
