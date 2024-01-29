@@ -4,26 +4,17 @@
 #include <stdlib.h>
 
 #include "lib/Http_server.h"
-#include "lib/urls.h"
+#include "lib/routing.h"
 #include "lib/http_content_resolver.h"
+#include "lib/urls.h"
 
 typedef struct _ResponseBuffer {
 	char* buffer_content;
 	int buffer_size;
 } ResponseBuffer;
 
-Hash_Table* defining_routes();
 char* get_resource_info(Hash_Table* table, char* route);
 ResponseBuffer* response_buffer(char* resource);
-
-
-Hash_Table* defining_routes(){
-	Hash_Table* linked_routes = create_table();
-	create_route(linked_routes, "/", "/index.html");
-
-	return linked_routes;
-}
-
 
 char* get_resource_info(Hash_Table* table, char* route){
 	int i = hash_function(route);

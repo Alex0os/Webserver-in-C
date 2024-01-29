@@ -19,19 +19,6 @@ typedef struct _hash_table {
 } Hash_Table;
 
 
-//char* resource_folder(char* resource){
-//	int char_index = 0;
-//
-//	for (int i = 0; resource[char_index]; i++) {
-//		if (resource[char_index] == '.') {
-//			char* resource_extention = malloc(MAX_EXTENTION_SIZE);
-//			strcpy(resource_extention, &resource[char_index]);
-//			return resource_extention;
-//		}
-//	}
-//	return NULL;
-//}
-//
 int hash_function(char* route){
 	size_t hash_index = 0;
 	for (size_t i = 0; route[i]; i++) {
