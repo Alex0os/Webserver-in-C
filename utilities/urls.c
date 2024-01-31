@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "lib/routing.h"
+#include "../lib/routing.h"
 
 Hash_Table* defining_routes(){
 	Hash_Table* linked_routes = create_table();

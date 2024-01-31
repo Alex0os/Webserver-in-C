@@ -16,6 +16,8 @@ typedef struct _ResponseBuffer {
 char* get_resource_info(Hash_Table* table, char* route);
 ResponseBuffer* response_buffer(char* resource);
 
+//
+
 char* get_resource_info(Hash_Table* table, char* route){
 	int i = hash_function(route);
 	Item* resource_content = table->items[i];
@@ -66,7 +68,7 @@ int main(void){
 	Hash_Table* routes_resources_table = defining_routes();
 	Http_server http_server;
 
-	if (create_socket(&http_server) < 0){
+	if (create_server(&http_server) < 0){
 		exit(EXIT_FAILURE);
 	}
 
