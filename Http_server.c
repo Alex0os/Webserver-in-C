@@ -7,9 +7,8 @@
 #include <sys/socket.h>
 
 #include "lib/routing.h"
-#include "lib/urls.h"
 
-#define BUFFER_SIZE 10000
+#define REQUEST_BUFFER_SIZE 16384 // 16 KB
 #define PORT 8080
 
 typedef struct {
@@ -18,6 +17,13 @@ typedef struct {
 	Hash_Table* routes;
 } Http_server;;
 
+int create_server(Http_server* new_server);
+int handle_client(int host_socket);
+void send_response(int client_fd, char* buffer_content, int buffer_size);
+void parse_request(int client_socket);
+char* request_uri(int clinet_socket);
+char* get_request_line(char* request);
+char* get_request_header(char* request);
 
 int create_server(Http_server* new_server){
 
@@ -39,16 +45,6 @@ int create_server(Http_server* new_server){
 		perror("A problem ocurred while trying to start the listening process");
 		return -1;
 	}
-
-	/*This is the function used to create the server, and due to the fact that we're looking
-	 * for a change in the internal functioning of the server itself, then first how are we
-	 * gonna change and what are we gonna change
-	 *
-	 * First of all, it is supposed that we're adding some characteristics to the hash table, first,
-	 * we're gonna add the process to add the routes related to resources in the system
-	 */
-
-	new_server->routes = defining_routes();
 
 	printf("Socket initialized successfully for accepting connections\n");
 	return 0;
@@ -74,14 +70,15 @@ void send_response(int client_fd, char* buffer_content, int buffer_size){
 	close(client_fd);
 }
 
-char* get_request_header(int client_socket){
-	char buffer[BUFFER_SIZE];
-	int bytes_recieved = recv(client_socket, buffer, BUFFER_SIZE, 0);
+char* request_uri(int client_socket){
+	char buffer[REQUEST_BUFFER_SIZE];
+	int bytes_recieved = recv(client_socket, buffer, REQUEST_BUFFER_SIZE, 0);
 
 	buffer[bytes_recieved] = '\0';
+	printf("%s", buffer);
 	char* method = malloc(100);
-	char* uri = malloc(100);;
-	char* version = malloc(100);;
+	char* uri = malloc(100);
+	char* version = malloc(100);
 
 	sscanf(buffer, "%s %s %s", method, uri, version);
 	free(method);

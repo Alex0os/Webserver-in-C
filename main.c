@@ -72,14 +72,20 @@ int main(void){
 		exit(EXIT_FAILURE);
 	}
 
+	http_server.routes = routes_resources_table;
+
 	for (;;) {
 		int client_socket = handle_client(http_server.socket);
-
-		char* uri = get_request_header(client_socket);
+		 
+		// Here I should put the "parse_request" function to give it the socket
+		// descriptor and get the pointer to the request line 
+		
+		char* uri = request_uri(client_socket); // This will be replaced with
+																								 // "request_uri(char*
+																								 // request_line)"
 		ResponseBuffer* response;
 
 		if (strchr(uri, '.')) {
-			// If a dot is in the "uri", then it is a file route, so is not necessary to look for it in the table of defined valid routes
 			response = response_buffer(uri);
 		} else {
 			char* resource_linked_to_route = get_resource_info(routes_resources_table, uri);
