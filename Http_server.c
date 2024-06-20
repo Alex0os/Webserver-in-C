@@ -15,9 +15,9 @@ typedef struct {
 	int socket;
 	int port;
 	Hash_Table* routes;
-} Http_server;;
+} Http_server;
 
-int create_server(Http_server* new_server);
+Http_server* create_server();
 int handle_client(int host_socket);
 void send_response(int client_fd, char* buffer_content, int buffer_size);
 void parse_request(int client_socket);
@@ -25,7 +25,8 @@ char* request_uri(int clinet_socket);
 char* get_request_line(char* request);
 char* get_request_header(char* request);
 
-int create_server(Http_server* new_server){
+Http_server* create_server(){
+	Http_server* new_server = (Http_server*)malloc(sizeof(Http_server));
 
 	new_server->socket = socket(AF_INET, SOCK_STREAM, 0);
 	int option = 1;
@@ -38,16 +39,16 @@ int create_server(Http_server* new_server){
 
 	if (bind(new_server->socket, (struct sockaddr*)&host_addr, sizeof(host_addr)) < 0) {
 		perror("A problem occurred in the binding process of the socket");
-		return -1;
+		return NULL;
 	}
 
 	if (listen(new_server->socket, SOMAXCONN) < 0) {
 		perror("A problem ocurred while trying to start the listening process");
-		return -1;
+		return NULL;
 	}
 
 	printf("Socket initialized successfully for accepting connections\n");
-	return 0;
+	return new_server;
 }
 
 

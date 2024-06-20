@@ -65,17 +65,15 @@ ResponseBuffer* response_buffer(char* resource){
 
 
 int main(void){
-	Hash_Table* routes_resources_table = defining_routes();
-	Http_server http_server;
+	Http_server* http_server = create_server();
+	http_server->routes = defining_routes();
 
-	if (create_server(&http_server) < 0){
+	if (http_server == NULL){
 		exit(EXIT_FAILURE);
 	}
 
-	http_server.routes = routes_resources_table;
-
 	for (;;) {
-		int client_socket = handle_client(http_server.socket);
+		int client_socket = handle_client(http_server->socket);
 		 
 		// Here I should put the "parse_request" function to give it the socket
 		// descriptor and get the pointer to the request line 
@@ -88,7 +86,7 @@ int main(void){
 		if (strchr(uri, '.')) {
 			response = response_buffer(uri);
 		} else {
-			char* resource_linked_to_route = get_resource_info(routes_resources_table, uri);
+			char* resource_linked_to_route = get_resource_info(http_server->routes, uri);
 			response = response_buffer(resource_linked_to_route);
 		}
 
@@ -97,6 +95,7 @@ int main(void){
 		}
 
 		send_response(client_socket, response->buffer_content, response->buffer_size);
+		free(response->buffer_content);
 		free(response);
 		free(uri);
 	}

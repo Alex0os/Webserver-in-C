@@ -11,7 +11,7 @@ typedef struct {
 } Http_server;
 
 
-int create_server(Http_server* new_server);
+Http_server* create_server();
 int handle_client(int host_socket);
 char* request_uri(int client_socket);
 void send_response(int client_fd, char* buffer_content, int buffer_size);
