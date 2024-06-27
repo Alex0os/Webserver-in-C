@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <stddef.h>
 
 #include "lib/routing.h"
 
@@ -22,8 +23,8 @@ int handle_client(int host_socket);
 void send_response(int client_fd, char* buffer_content, int buffer_size);
 void parse_request(int client_socket);
 char* request_uri(int clinet_socket);
-char* get_request_line(char* request);
-char* get_request_header(char* request);
+int get_request_line(char* request, char* buffer);
+char* get_request_header(char* request, int header_start);
 
 Http_server* create_server(){
 	Http_server* new_server = (Http_server*)malloc(sizeof(Http_server));
@@ -72,19 +73,35 @@ void send_response(int client_fd, char* buffer_content, int buffer_size){
 }
 
 char* request_uri(int client_socket){
-	char buffer[REQUEST_BUFFER_SIZE];
-	int bytes_recieved = recv(client_socket, buffer, REQUEST_BUFFER_SIZE, 0);
+	char requet_buffer[REQUEST_BUFFER_SIZE];
+	int bytes_recieved = recv(client_socket, requet_buffer, REQUEST_BUFFER_SIZE, 0);
+	requet_buffer[bytes_recieved] = '\0';
 
-	buffer[bytes_recieved] = '\0';
-	printf("%s", buffer);
+	char line_buffer[100];
+	char header_buffer[REQUEST_BUFFER_SIZE];
+	
+	int header_begins = get_request_line(requet_buffer, line_buffer);
+
+
 	char* method = malloc(100);
 	char* uri = malloc(100);
 	char* version = malloc(100);
 
-	sscanf(buffer, "%s %s %s", method, uri, version);
+	sscanf(requet_buffer, "%s %s %s", method, uri, version);
 	free(method);
 	free(version);
 	return uri;
 }
 
 
+int get_request_line(char* request, char* buffer){
+	int i = 0;
+	
+	 while (request[i] != '\n'){
+		buffer[i] = request[i];
+		i++;
+	}
+
+	buffer[i] = '\0';
+	return i + 1;
+}
