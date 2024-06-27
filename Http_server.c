@@ -24,7 +24,7 @@ void send_response(int client_fd, char* buffer_content, int buffer_size);
 void parse_request(int client_socket);
 char* request_uri(int clinet_socket);
 int get_request_line(char* request, char* buffer);
-char* get_request_header(char* request, int header_start);
+int get_request_header(char* request, char* buffer, int header_start);
 
 Http_server* create_server(){
 	Http_server* new_server = (Http_server*)malloc(sizeof(Http_server));
@@ -73,21 +73,22 @@ void send_response(int client_fd, char* buffer_content, int buffer_size){
 }
 
 char* request_uri(int client_socket){
-	char requet_buffer[REQUEST_BUFFER_SIZE];
-	int bytes_recieved = recv(client_socket, requet_buffer, REQUEST_BUFFER_SIZE, 0);
-	requet_buffer[bytes_recieved] = '\0';
+	char request_buffer[REQUEST_BUFFER_SIZE];
+	int bytes_recieved = recv(client_socket, request_buffer, REQUEST_BUFFER_SIZE, 0);
+	request_buffer[bytes_recieved] = '\0';
 
 	char line_buffer[100];
 	char header_buffer[REQUEST_BUFFER_SIZE];
 	
-	int header_begins = get_request_line(requet_buffer, line_buffer);
+	int header_start = get_request_line(request_buffer, line_buffer);
+	int body_start =  get_request_header(request_buffer, header_buffer, header_start);
 
 
 	char* method = malloc(100);
 	char* uri = malloc(100);
 	char* version = malloc(100);
 
-	sscanf(requet_buffer, "%s %s %s", method, uri, version);
+	sscanf(request_buffer, "%s %s %s", method, uri, version);
 	free(method);
 	free(version);
 	return uri;
@@ -103,5 +104,21 @@ int get_request_line(char* request, char* buffer){
 	}
 
 	buffer[i] = '\0';
+	return i + 1;
+}
+
+
+int get_request_header(char* request, char* buffer, int header_start){
+	int i = header_start;
+	int j = 0;
+
+	while (request[i] != '\n' || request[i + 2] != '\n'){
+		buffer[j] = request[i];
+		j++;
+		i++;
+	}
+
+	buffer[j] = '\n';
+	buffer[j + 1] = '\0';
 	return i + 1;
 }
