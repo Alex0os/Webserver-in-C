@@ -18,11 +18,17 @@ typedef struct {
 	Hash_Table* routes;
 } Http_server;
 
+typedef struct{
+	char* line;
+	char* header;
+	char body;
+} Request;
+
 Http_server* create_server();
 int handle_client(int host_socket);
 void send_response(int client_fd, char* buffer_content, int buffer_size);
-void parse_request(int client_socket);
-char* request_uri(int clinet_socket);
+Request* accept_request(int client_socket);
+char* request_uri(char* request_line);
 int get_request_line(char* request, char* buffer);
 int get_request_header(char* request, char* buffer, int header_start);
 
@@ -72,26 +78,31 @@ void send_response(int client_fd, char* buffer_content, int buffer_size){
 	close(client_fd);
 }
 
-char* request_uri(int client_socket){
+char* request_uri(char* request_line){
+	char method[100];
+	char* uri = malloc(100);
+	char version[100];
+
+	sscanf(request_line, "%s %s %s", method, uri, version);
+	return uri;
+}
+
+Request* accept_request(int client_socket){
+	Request* request = (Request*)malloc(sizeof(Request));
+
+	request->line = (char*)malloc(100);
+	request->header = (char*)malloc(REQUEST_BUFFER_SIZE);
+	char body_buffer[REQUEST_BUFFER_SIZE];
+
 	char request_buffer[REQUEST_BUFFER_SIZE];
 	int bytes_recieved = recv(client_socket, request_buffer, REQUEST_BUFFER_SIZE, 0);
 	request_buffer[bytes_recieved] = '\0';
 
-	char line_buffer[100];
-	char header_buffer[REQUEST_BUFFER_SIZE];
 	
-	int header_start = get_request_line(request_buffer, line_buffer);
-	int body_start =  get_request_header(request_buffer, header_buffer, header_start);
+	int header_start = get_request_line(request_buffer, request->line);
+	int body_start =  get_request_header(request_buffer, request->header, header_start);
 
-
-	char* method = malloc(100);
-	char* uri = malloc(100);
-	char* version = malloc(100);
-
-	sscanf(request_buffer, "%s %s %s", method, uri, version);
-	free(method);
-	free(version);
-	return uri;
+	return request;
 }
 
 
@@ -122,3 +133,10 @@ int get_request_header(char* request, char* buffer, int header_start){
 	buffer[j + 1] = '\0';
 	return i + 1;
 }
+
+void free_client(Request* client_request){
+	free(client_request->line);
+	free(client_request->header);
+	free(client_request);
+}
+

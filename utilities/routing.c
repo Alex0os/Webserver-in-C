@@ -67,7 +67,6 @@ void create_route(Hash_Table* table, char* route, char* resource){
 }
 
 
-// These are auxiliar functions to print the results of creating a hash table with this codebase
 
 void printchain(Item* item){
 	do {

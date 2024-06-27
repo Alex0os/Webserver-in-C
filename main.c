@@ -16,7 +16,6 @@ typedef struct _ResponseBuffer {
 char* get_resource_info(Hash_Table* table, char* route);
 ResponseBuffer* response_buffer(char* resource);
 
-//
 
 char* get_resource_info(Hash_Table* table, char* route){
 	int i = hash_function(route);
@@ -74,27 +73,30 @@ int main(void){
 
 	for (;;) {
 		int client_socket = handle_client(http_server->socket);
-		 
-		// Here I should put the "parse_request" function to give it the socket
-		// descriptor and get the pointer to the request line 
-		
-		char* uri = request_uri(client_socket); // This will be replaced with
-																								 // "request_uri(char*
-																								 // request_line)"
+
+		Request* client_request = accept_request(client_socket);
+		char* uri = request_uri(client_request->line);
+
 		ResponseBuffer* response;
 
 		if (strchr(uri, '.')) {
 			response = response_buffer(uri);
-		} else {
+		}
+		else {
 			char* resource_linked_to_route = get_resource_info(http_server->routes, uri);
 			response = response_buffer(resource_linked_to_route);
 		}
-
 		if (response == NULL) {
+			char* notfound = "HTTP/1.1 404 Not Found\nContent-Length: 0\n\n";
+			send_response(client_socket, notfound, strlen(notfound));
+
+			free_client(client_request);
+			free(uri);
 			continue;
 		}
 
 		send_response(client_socket, response->buffer_content, response->buffer_size);
+		free_client(client_request);
 		free(response->buffer_content);
 		free(response);
 		free(uri);
