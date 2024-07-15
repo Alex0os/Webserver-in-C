@@ -45,8 +45,10 @@ ResponseBuffer* response_buffer(char* resource){
 	int file_size = get_file_size(resource_ptr);
 	char* file_content = get_file_content(resource_ptr, file_size);
 
-	struct Header_Info* header = get_response_header(strchr(resource, '.'), resource);
-	char* full_response = (char*)malloc(file_size + header->header_size + 1);
+	char* resource_fileExtension = strchr(resource, '.');
+	LineInfo* header = get_response_line(resource_fileExtension, resource);
+	int full_responseSize = file_size + header->header_size + 1;
+	char* full_response = (char*)malloc(full_responseSize);
 
 
 	sprintf(full_response, "%s%s", header->header_content, file_content);
@@ -58,7 +60,7 @@ ResponseBuffer* response_buffer(char* resource){
 	ResponseBuffer* buffer = (ResponseBuffer*)malloc(sizeof(ResponseBuffer));
 
 	buffer->buffer_content = full_response;
-	buffer->buffer_size = strlen(full_response);
+	buffer->buffer_size = full_responseSize;
 	return buffer;
 }
 
@@ -86,6 +88,7 @@ int main(void){
 			char* resource_linked_to_route = get_resource_info(http_server->routes, uri);
 			response = response_buffer(resource_linked_to_route);
 		}
+
 		if (response == NULL) {
 			char* notfound = "HTTP/1.1 404 Not Found\nContent-Length: 0\n\n";
 			send_response(client_socket, notfound, strlen(notfound));

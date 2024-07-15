@@ -6,31 +6,31 @@
 
 #define MAX_HEADER_SIZE 1000
 
-struct Header_Info {
+typedef struct {
 	char* header_content;
 	size_t header_size;
-};
+} LineInfo;
 
-struct Header_Info* get_response_header(char* extention, char* main_type);
-char* get_content_type(char* uri);
+LineInfo* get_response_line(char* extention, char* main_type);
+char* resource_contentType(char* uri);
 char* get_file_content(FILE* file, int file_size);
 int get_file_size(FILE* file);
 
 
-struct Header_Info* get_response_header(char* extention, char* uri){
-	char* header_w_content_type = get_content_type(uri);
+LineInfo* get_response_line(char* extention, char* uri){
+	char* response_line = resource_contentType(uri);
 
-	struct Header_Info* header = (struct Header_Info*)malloc(sizeof(struct Header_Info));
+	LineInfo* header = (LineInfo*)malloc(sizeof(LineInfo));
 
 	header->header_content = (char*)malloc(MAX_HEADER_SIZE);
-	sprintf(header->header_content, header_w_content_type, extention + 1);
+	sprintf(header->header_content, response_line, extention + 1);
 	header->header_size = strlen(header->header_content);
 
 	return header;
 }
 
 
-char* get_content_type(char* uri){
+char* resource_contentType(char* uri){
 	if (strstr(uri, "images") != NULL) {
 		return "HTTP/1.1 200 OK\r\nContent-Type: image/%s\r\n\r\n";
 	}
