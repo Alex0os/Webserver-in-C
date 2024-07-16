@@ -8,7 +8,7 @@
 #include "lib/http_content_resolver.h"
 #include "lib/urls.h"
 
-typedef struct _ResponseBuffer {
+typedef struct {
 	char* buffer_content;
 	int buffer_size;
 } ResponseBuffer;
@@ -45,10 +45,10 @@ ResponseBuffer* response_buffer(char* resource){
 	int file_size = get_file_size(resource_ptr);
 	char* file_content = get_file_content(resource_ptr, file_size);
 
-	char* resource_fileExtension = strchr(resource, '.');
-	LineInfo* header = get_response_line(resource_fileExtension, resource);
-	int full_responseSize = file_size + header->header_size + 1;
-	char* full_response = (char*)malloc(full_responseSize);
+	char* resource_file_extention = strchr(resource, '.');
+	LineInfo* header = get_response_line(resource_file_extention, resource);
+	int full_responsesize = file_size + header->header_size + 1;
+	char* full_response = (char*)malloc(full_responsesize);
 
 
 	sprintf(full_response, "%s%s", header->header_content, file_content);
@@ -60,7 +60,7 @@ ResponseBuffer* response_buffer(char* resource){
 	ResponseBuffer* buffer = (ResponseBuffer*)malloc(sizeof(ResponseBuffer));
 
 	buffer->buffer_content = full_response;
-	buffer->buffer_size = full_responseSize;
+	buffer->buffer_size = full_responsesize;
 	return buffer;
 }
 

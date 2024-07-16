@@ -12,13 +12,13 @@ typedef struct {
 } LineInfo;
 
 LineInfo* get_response_line(char* extention, char* main_type);
-char* resource_contentType(char* uri);
+char* resource_content_type(char* uri);
 char* get_file_content(FILE* file, int file_size);
 int get_file_size(FILE* file);
 
 
 LineInfo* get_response_line(char* extention, char* uri){
-	char* response_line = resource_contentType(uri);
+	char* response_line = resource_content_type(uri);
 
 	LineInfo* header = (LineInfo*)malloc(sizeof(LineInfo));
 
@@ -30,7 +30,7 @@ LineInfo* get_response_line(char* extention, char* uri){
 }
 
 
-char* resource_contentType(char* uri){
+char* resource_content_type(char* uri){
 	if (strstr(uri, "images") != NULL) {
 		return "HTTP/1.1 200 OK\r\nContent-Type: image/%s\r\n\r\n";
 	}
