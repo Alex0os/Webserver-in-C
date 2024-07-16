@@ -15,25 +15,25 @@
 typedef struct {
 	int socket;
 	int port;
-	Hash_Table* routes;
+	Hash_Table *routes;
 } Http_server;
 
 typedef struct{
-	char* line;
-	char* header;
+	char *line;
+	char *header;
 	char body;
 } Request;
 
-Http_server* create_server();
+Http_server *create_server();
 int handle_client(int host_socket);
-void send_response(int client_fd, char* buffer_content, int buffer_size);
-Request* accept_request(int client_socket);
-char* request_uri(char* request_line);
-int get_request_line(char* request, char* buffer);
-int get_request_header(char* request, char* buffer, int header_start);
+void send_response(int client_fd, char *buffer_content, int buffer_size);
+Request *accept_request(int client_socket);
+char *request_uri(char *request_line);
+int get_request_line(char *request, char *buffer);
+int get_request_header(char *request, char *buffer, int header_start);
 
-Http_server* create_server(){
-	Http_server* new_server = (Http_server*)malloc(sizeof(Http_server));
+Http_server *create_server(){
+	Http_server *new_server = (Http_server*)malloc(sizeof(Http_server));
 
 	new_server->socket = socket(AF_INET, SOCK_STREAM, 0);
 	int option = 1;
@@ -73,22 +73,22 @@ int handle_client(int host_socket){
 	return client_socket;
 }
 
-void send_response(int client_fd, char* buffer_content, int buffer_size){
+void send_response(int client_fd, char *buffer_content, int buffer_size){
 	send(client_fd, (const void*)buffer_content, buffer_size, 0);
 	close(client_fd);
 }
 
-char* request_uri(char* request_line){
+char *request_uri(char *request_line){
 	char method[100];
-	char* uri = malloc(100);
+	char *uri = malloc(100);
 	char version[100];
 
 	sscanf(request_line, "%s %s %s", method, uri, version);
 	return uri;
 }
 
-Request* accept_request(int client_socket){
-	Request* request = (Request*)malloc(sizeof(Request));
+Request *accept_request(int client_socket){
+	Request *request = (Request*)malloc(sizeof(Request));
 
 	request->line = (char*)malloc(100);
 	request->header = (char*)malloc(REQUEST_BUFFER_SIZE);
@@ -106,7 +106,7 @@ Request* accept_request(int client_socket){
 }
 
 
-int get_request_line(char* request, char* buffer){
+int get_request_line(char *request, char *buffer){
 	int i = 0;
 	
 	 while (request[i] != '\n'){
@@ -119,7 +119,7 @@ int get_request_line(char* request, char* buffer){
 }
 
 
-int get_request_header(char* request, char* buffer, int header_start){
+int get_request_header(char *request, char *buffer, int header_start){
 	int i = header_start;
 	int j = 0;
 
@@ -134,7 +134,7 @@ int get_request_header(char* request, char* buffer, int header_start){
 	return i + 1;
 }
 
-void free_client(Request* client_request){
+void free_client(Request *client_request){
 	free(client_request->line);
 	free(client_request->header);
 	free(client_request);

@@ -9,17 +9,17 @@
 #include "lib/urls.h"
 
 typedef struct _ResponseBuffer {
-	char* buffer_content;
+	char *buffer_content;
 	int buffer_size;
 } ResponseBuffer;
 
-char* get_resource_info(Hash_Table* table, char* route);
-ResponseBuffer* response_buffer(char* resource);
+char *get_resource_info(Hash_Table *table, char *route);
+ResponseBuffer *response_buffer(char *resource);
 
 
-char* get_resource_info(Hash_Table* table, char* route){
+char *get_resource_info(Hash_Table *table, char *route){
 	int i = hash_function(route);
-	Item* resource_content = table->items[i];
+	Item *resource_content = table->items[i];
 
 	if (resource_content == NULL) {
 		return NULL;
@@ -34,8 +34,8 @@ char* get_resource_info(Hash_Table* table, char* route){
 }
 
 
-ResponseBuffer* response_buffer(char* resource){
-	FILE* resource_ptr = get_resource_ptr(resource);
+ResponseBuffer *response_buffer(char *resource){
+	FILE *resource_ptr = get_resource_ptr(resource);
 
 	if (resource_ptr == NULL) {
 		perror("The resource was not found");
@@ -43,10 +43,10 @@ ResponseBuffer* response_buffer(char* resource){
 	}
 
 	int file_size = get_file_size(resource_ptr);
-	char* file_content = get_file_content(resource_ptr, file_size);
+	char *file_content = get_file_content(resource_ptr, file_size);
 
-	struct Header_Info* header = get_response_header(strchr(resource, '.'), resource);
-	char* full_response = (char*)malloc(file_size + header->header_size + 1);
+	struct Header_Info *header = get_response_header(strchr(resource, '.'), resource);
+	char *full_response = (char*)malloc(file_size + header->header_size + 1);
 
 
 	sprintf(full_response, "%s%s", header->header_content, file_content);
@@ -55,7 +55,7 @@ ResponseBuffer* response_buffer(char* resource){
 	free(file_content);
 	free(header);
 
-	ResponseBuffer* buffer = (ResponseBuffer*)malloc(sizeof(ResponseBuffer));
+	ResponseBuffer *buffer = (ResponseBuffer*)malloc(sizeof(ResponseBuffer));
 
 	buffer->buffer_content = full_response;
 	buffer->buffer_size = strlen(full_response);
@@ -64,7 +64,7 @@ ResponseBuffer* response_buffer(char* resource){
 
 
 int main(void){
-	Http_server* http_server = create_server();
+	Http_server *http_server = create_server();
 	http_server->routes = defining_routes();
 
 	if (http_server == NULL){
@@ -74,20 +74,20 @@ int main(void){
 	for (;;) {
 		int client_socket = handle_client(http_server->socket);
 
-		Request* client_request = accept_request(client_socket);
-		char* uri = request_uri(client_request->line);
+		Request *client_request = accept_request(client_socket);
+		char *uri = request_uri(client_request->line);
 
-		ResponseBuffer* response;
+		ResponseBuffer *response;
 
 		if (strchr(uri, '.')) {
 			response = response_buffer(uri);
 		}
 		else {
-			char* resource_linked_to_route = get_resource_info(http_server->routes, uri);
+			char *resource_linked_to_route = get_resource_info(http_server->routes, uri);
 			response = response_buffer(resource_linked_to_route);
 		}
 		if (response == NULL) {
-			char* notfound = "HTTP/1.1 404 Not Found\nContent-Length: 0\n\n";
+			char *notfound = "HTTP/1.1 404 Not Found\nContent-Length: 0\n\n";
 			send_response(client_socket, notfound, strlen(notfound));
 
 			free_client(client_request);
