@@ -37,7 +37,12 @@ HttpServer *create_server()
 
 	server->socket = socket(AF_INET, SOCK_STREAM, 0);
 	int option = 1;
-	setsockopt(server->socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+	int options_status = setsockopt(server->socket, SOL_SOCKET, SO_REUSEADDR,
+									&option, sizeof(option));
+	if (options_status < 0) {
+		perror("A problem occurred while trying to set the server's socket options");
+		return NULL;
+	}
 
 	struct sockaddr_in host_addr;
 	host_addr.sin_family = AF_INET;
@@ -65,7 +70,8 @@ int handle_client(int host_socket)
 	struct sockaddr_in client_addr;
 	size_t client_addr_size = sizeof(client_addr);
 
-	int client_socket = accept(host_socket, (struct sockaddr*)&client_addr, (socklen_t*)&client_addr_size);
+	int client_socket = accept(host_socket, (struct sockaddr*)&client_addr,
+							  (socklen_t*)&client_addr_size);
 
 	if (client_socket < 0) {
 		 perror("A problem happened while trying to connect to the client");
@@ -93,12 +99,11 @@ char *request_uri(char *request_line)
 Request *accept_request(int client_socket)
 {
 	Request *request = (Request*)malloc(sizeof(Request));
+	char body_buffer[REQUEST_BUFFER_SIZE], request_buffer[REQUEST_BUFFER_SIZE];
 
 	request->line = (char*)malloc(100);
 	request->header = (char*)malloc(REQUEST_BUFFER_SIZE);
-	char body_buffer[REQUEST_BUFFER_SIZE];
 
-	char request_buffer[REQUEST_BUFFER_SIZE];
 	int bytes_recieved = recv(client_socket, request_buffer, REQUEST_BUFFER_SIZE, 0);
 	request_buffer[bytes_recieved] = '\0';
 

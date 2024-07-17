@@ -4,9 +4,9 @@
 
 #include "../lib/routing.h"
 
-HashTabel *defining_routes()
+HashTable *defining_routes()
 {
-	HashTabel *linked_routes = create_table();
+	HashTable *linked_routes = create_table();
 	create_route(linked_routes, "/", "/index.html");
 
 	return linked_routes;
