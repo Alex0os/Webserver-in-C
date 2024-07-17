@@ -8,18 +8,18 @@
 
 
 typedef struct _item {
-	char *route;
-	char *resource;
+	char *route, *resource;
 	struct _item *next_link;
 } Item;
 
 typedef struct _hash_table {
 	Item* *items;
 	size_t table_size;
-} Hash_Table;
+} HashTable;
 
 
-int hash_function(char *route){
+int hash_function(char *route)
+{
 	size_t hash_index = 0;
 	for (size_t i = 0; route[i]; i++) {
 		hash_index += route[i]  *(pow(2, i));
@@ -27,8 +27,9 @@ int hash_function(char *route){
 	return hash_index % (size_t)TABLE_SIZE;
 }
 
-Hash_Table *create_table(){
-	Hash_Table *table = malloc(sizeof(Hash_Table));
+HashTable *create_table()
+{
+	HashTable *table = malloc(sizeof(HashTable));
 	table->table_size = TABLE_SIZE;
 
 	table->items = (Item**)calloc(TABLE_SIZE, sizeof(Item*));
@@ -40,7 +41,8 @@ Hash_Table *create_table(){
 	return table;
 }
 
-static void handle_collision(Item *item, char *route, char *resource){
+static void handle_collision(Item *item, char *route, char *resource)
+{
 	while (item->next_link != NULL) {
 		item = item->next_link;
 	}
@@ -51,7 +53,8 @@ static void handle_collision(Item *item, char *route, char *resource){
 	item->next_link->next_link = NULL;
 }
 
-void create_route(Hash_Table *table, char *route, char *resource){
+void create_route(HashTable *table, char *route, char *resource)
+{
 	size_t i = hash_function(route);
 
 	if (table->items[i] != NULL) {
@@ -68,14 +71,16 @@ void create_route(Hash_Table *table, char *route, char *resource){
 
 
 
-void printchain(Item *item){
+void printchain(Item *item)
+{
 	do {
 		printf("Key: %s\nValue: %s\n\n", item->route, item->resource);
 		item = item->next_link;
 	} while (item != NULL);
 }
 
-void print_table(Hash_Table *table){
+void print_table(HashTable *table)
+{
 	for (int i = 0; i < table->table_size; i++) {
 		if (table->items[i] == NULL) {
 			continue;

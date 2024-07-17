@@ -13,11 +13,11 @@ typedef struct _ResponseBuffer {
 	int buffer_size;
 } ResponseBuffer;
 
-char *get_resource_info(Hash_Table *table, char *route);
+char *get_resource_info(HashTable *table, char *route);
 ResponseBuffer *response_buffer(char *resource);
 
-
-char *get_resource_info(Hash_Table *table, char *route){
+char *get_resource_info(HashTable *table, char *route)
+{
 	int i = hash_function(route);
 	Item *resource_content = table->items[i];
 
@@ -34,7 +34,8 @@ char *get_resource_info(Hash_Table *table, char *route){
 }
 
 
-ResponseBuffer *response_buffer(char *resource){
+ResponseBuffer *response_buffer(char *resource)
+{
 	FILE *resource_ptr = get_resource_ptr(resource);
 
 	if (resource_ptr == NULL) {
@@ -63,16 +64,17 @@ ResponseBuffer *response_buffer(char *resource){
 }
 
 
-int main(void){
-	Http_server *http_server = create_server();
-	http_server->routes = defining_routes();
+int main(void)
+{
+	HttpServer *server = create_server();
+	server->routes = defining_routes();
 
-	if (http_server == NULL){
+	if (server == NULL){
 		exit(EXIT_FAILURE);
 	}
 
 	for (;;) {
-		int client_socket = handle_client(http_server->socket);
+		int client_socket = handle_client(server->socket);
 
 		Request *client_request = accept_request(client_socket);
 		char *uri = request_uri(client_request->line);
@@ -83,7 +85,7 @@ int main(void){
 			response = response_buffer(uri);
 		}
 		else {
-			char *resource_linked_to_route = get_resource_info(http_server->routes, uri);
+			char *resource_linked_to_route = get_resource_info(server->routes, uri);
 			response = response_buffer(resource_linked_to_route);
 		}
 		if (response == NULL) {

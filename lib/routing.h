@@ -12,14 +12,14 @@ typedef struct _item {
 typedef struct _hash_table {
 	Item** items;
 	size_t table_size;
-} Hash_Table;
+} HashTable;
 
 
 int hash_function(char* route);
-Hash_Table* create_table();
-void create_route(Hash_Table* table, char* route, char* resource);
+HashTable* create_table();
+void create_route(HashTable* table, char* route, char* resource);
 void handle_collision(Item* item, char* route, char* resource);
-void print_table(Hash_Table* table);
+void print_table(HashTable* table);
 void printchain(Item* item);
 char* resource_folder(char* resource);
 

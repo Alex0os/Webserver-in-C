@@ -7,8 +7,8 @@
 typedef struct {
 	int socket;
 	int port;
-	Hash_Table* routes;
-} Http_server;
+	HashTable* routes;
+} HttpServer;
 
 typedef struct{
 	char* line;
@@ -17,7 +17,7 @@ typedef struct{
 } Request;
 
 
-Http_server* create_server();
+HttpServer* create_server();
 int handle_client(int host_socket);
 char* request_uri(char* request_line);
 void send_response(int client_fd, char* buffer_content, int buffer_size);

@@ -17,7 +17,8 @@ char *get_file_content(FILE *file, int file_size);
 int get_file_size(FILE *file);
 
 
-struct Header_Info *get_response_header(char *extention, char *uri){
+struct Header_Info *get_response_header(char *extention, char *uri)
+{
 	char *header_w_content_type = get_content_type(uri);
 
 	struct Header_Info *header = (struct Header_Info*)malloc(sizeof(struct Header_Info));
@@ -30,7 +31,8 @@ struct Header_Info *get_response_header(char *extention, char *uri){
 }
 
 
-char *get_content_type(char *uri){
+char *get_content_type(char *uri)
+{
 	if (strstr(uri, "images") != NULL) {
 		return "HTTP/1.1 200 OK\r\nContent-Type: image/%s\r\n\r\n";
 	}
@@ -45,7 +47,8 @@ int get_file_size(FILE *file){
 	return size;
 }
 
-char *get_file_content(FILE *file, int file_size){
+char *get_file_content(FILE *file, int file_size)
+{
 	char *file_content = malloc(file_size + 1);
 	fread(file_content, 1, file_size, file);
 
@@ -53,7 +56,8 @@ char *get_file_content(FILE *file, int file_size){
 }
 
 
-FILE *get_resource_ptr(char *resource){
+FILE *get_resource_ptr(char *resource)
+{
 	char current_dir[512];
 	getcwd(current_dir, 256);
 
