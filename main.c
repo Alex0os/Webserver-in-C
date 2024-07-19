@@ -14,7 +14,7 @@ typedef struct _ResponseBuffer {
 } ResponseBuffer;
 
 char *get_resource_info(HashTable *table, char *route);
-ResponseBuffer *response_buffer(char *resource);
+ResponseBuffer *http_response_buffer(char *resource);
 
 char *get_resource_info(HashTable *table, char *route)
 {
@@ -34,7 +34,7 @@ char *get_resource_info(HashTable *table, char *route)
 }
 
 
-ResponseBuffer *response_buffer(char *resource)
+ResponseBuffer *http_response_buffer(char *resource)
 {
 	FILE *resource_ptr = get_resource_ptr(resource);
 
@@ -46,7 +46,7 @@ ResponseBuffer *response_buffer(char *resource)
 	size_t file_size = get_file_size(resource_ptr);
 	char *file_content = get_file_content(resource_ptr, file_size);
 
-	struct Header_Info *header = get_response_header(strchr(resource, '.'), resource);
+	ResponseHeader *header = get_response_header(strchr(resource, '.'), resource);
 	char *full_response = (char*)malloc(file_size + header->header_size + 1);
 
 
@@ -82,11 +82,11 @@ int main(void)
 		ResponseBuffer *response;
 
 		if (strchr(uri, '.')) {
-			response = response_buffer(uri);
+			response = http_response_buffer(uri);
 		}
 		else {
 			char *resource_linked_to_route = get_resource_info(server->routes, uri);
-			response = response_buffer(resource_linked_to_route);
+			response = http_response_buffer(resource_linked_to_route);
 		}
 		if (response == NULL) {
 			char *notfound = "HTTP/1.1 404 Not Found\nContent-Length: 0\n\n";
