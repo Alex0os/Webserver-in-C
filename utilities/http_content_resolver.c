@@ -6,25 +6,25 @@
 
 #define MAX_HEADER_SIZE 1000
 
-struct Header_Info {
+typedef struct {
 	char *header_content;
 	size_t header_size;
-};
+} ResponseHeader;
 
-struct Header_Info *get_response_header(char *extention, char *main_type);
+ResponseHeader *get_response_header(char *resource_extension, char *main_type);
 char *get_content_type(char *uri);
 char *get_file_content(FILE *file, size_t file_size);
 size_t get_file_size(FILE *file);
 
 
-struct Header_Info *get_response_header(char *extention, char *uri)
+ResponseHeader *get_response_header(char *resource_extension, char *uri)
 {
 	char *header_w_content_type = get_content_type(uri);
 
-	struct Header_Info *header = (struct Header_Info*)malloc(sizeof(struct Header_Info));
+	ResponseHeader *header = (ResponseHeader*)malloc(sizeof(ResponseHeader));
 
 	header->header_content = (char*)malloc(MAX_HEADER_SIZE);
-	sprintf(header->header_content, header_w_content_type, extention + 1);
+	sprintf(header->header_content, header_w_content_type, resource_extension + 1);
 	header->header_size = strlen(header->header_content);
 
 	return header;

@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define TABLE_SIZE 10
-#define MAX_EXTENTION_SIZE 100
+#define MAX_EXTENSION_SIZE 100
 
 
 typedef struct _item {
@@ -13,7 +13,7 @@ typedef struct _item {
 } Item;
 
 typedef struct _hash_table {
-	Item* *items;
+	Item **items;
 	size_t table_size;
 } HashTable;
 
