@@ -43,7 +43,7 @@ ResponseBuffer *response_buffer(char *resource)
 		return NULL;
 	}
 
-	int file_size = get_file_size(resource_ptr);
+	size_t file_size = get_file_size(resource_ptr);
 	char *file_content = get_file_content(resource_ptr, file_size);
 
 	struct Header_Info *header = get_response_header(strchr(resource, '.'), resource);

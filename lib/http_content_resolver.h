@@ -7,9 +7,9 @@ struct Header_Info {
 	size_t header_size;
 };
 
-char* get_file_content(FILE* file, int file_size);
+char* get_file_content(FILE* file, size_t file_size);
 FILE* get_resource_ptr(char* resource);
-int get_file_size(FILE* file);
+size_t get_file_size(FILE* file);
 int is_valid_route(char* uri);
 	struct Header_Info* get_response_header(char* extention, char* uri);
 

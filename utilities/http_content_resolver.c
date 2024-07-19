@@ -13,8 +13,8 @@ struct Header_Info {
 
 struct Header_Info *get_response_header(char *extention, char *main_type);
 char *get_content_type(char *uri);
-char *get_file_content(FILE *file, int file_size);
-int get_file_size(FILE *file);
+char *get_file_content(FILE *file, size_t file_size);
+size_t get_file_size(FILE *file);
 
 
 struct Header_Info *get_response_header(char *extention, char *uri)
@@ -39,7 +39,7 @@ char *get_content_type(char *uri)
 	return "HTTP/1.1 200 OK\r\nContent-Type: text/%s\r\n\r\n";
 }
 
-int get_file_size(FILE *file){
+size_t get_file_size(FILE *file){
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
 	rewind(file);
@@ -47,7 +47,7 @@ int get_file_size(FILE *file){
 	return size;
 }
 
-char *get_file_content(FILE *file, int file_size)
+char *get_file_content(FILE *file, size_t file_size)
 {
 	char *file_content = malloc(file_size + 1);
 	fread(file_content, 1, file_size, file);
