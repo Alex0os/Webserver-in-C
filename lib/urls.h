@@ -4,7 +4,7 @@
 #include "routing.h"
 
 
-Hash_Table* defining_routes();
+HashTable *defining_routes();
 
 
 #endif // URLS_H
