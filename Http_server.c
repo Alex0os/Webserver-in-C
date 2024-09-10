@@ -75,7 +75,7 @@ int handle_client(int host_socket)
 
 	if (client_socket < 0) {
 		 perror("A problem happened while trying to connect to the client");
-		 exit(EXIT_FAILURE);
+		 return -1;
 	}
 	return client_socket;
 }
@@ -107,7 +107,9 @@ Request *accept_request(int client_socket)
 	int bytes_recieved = recv(client_socket, request_buffer, REQUEST_BUFFER_SIZE, 0);
 	request_buffer[bytes_recieved] = '\0';
 
-	
+	// \n\r -> Separates the first line with the header
+	// \n\r\n\r -> Separates the headers from the body
+
 	int header_start = get_request_line(request_buffer, request->line);
 	int body_start =  get_request_header(request_buffer, request->header, header_start);
 

@@ -13,7 +13,7 @@ typedef struct {
 typedef struct{
 	char *line;
 	char *header;
-	char body;
+	char *body;
 } Request;
 
 

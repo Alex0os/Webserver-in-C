@@ -72,13 +72,15 @@ int main(void)
 		exit(EXIT_FAILURE);
 
 	for (;;) {
-		int client_socket = handle_client(server->socket);
+		int client_socket;
+
+		if ((client_socket = handle_client(server->socket)) < 0)
+			continue;
 
 		Request *client_request = accept_request(client_socket);
 		char *uri = request_uri(client_request->line);
 
 		ResponseBuffer *response;
-
 		bool is_file_route = strchr(uri, '.') ? true : false;
 
 		if (is_file_route) {

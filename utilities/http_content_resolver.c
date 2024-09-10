@@ -39,7 +39,8 @@ char *get_content_type(char *uri)
 	return "HTTP/1.1 200 OK\r\nContent-Type: text/%s\r\n\r\n";
 }
 
-size_t get_file_size(FILE *file){
+size_t get_file_size(FILE *file)
+{
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
 	rewind(file);
